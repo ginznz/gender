@@ -5,7 +5,7 @@ async function convertToDocx() {
 
     // Tạo tệp DOCX từ template
     const doc = new PizZip();
-    const docxTemplate = await fetch('https://raw.githubusercontent.com/dotansimha/word-templates/master/template.docx') // Tải mẫu DOCX
+    const docxTemplate = await fetch('https://github.com/ginznz/gender/raw/refs/heads/main/Template.docx') // Tải mẫu DOCX
         .then(res => res.arrayBuffer());
 
     doc.load(docxTemplate);
