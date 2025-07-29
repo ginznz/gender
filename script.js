@@ -3,12 +3,25 @@ async function convertToDocx() {
     const fileInput = document.getElementById('fileInput');
     const files = fileInput.files;
 
-    // Tạo tệp DOCX từ template
-    const doc = new PizZip();
-    const docxTemplate = await fetch('https://github.com/ginznz/gender/raw/refs/heads/main/Template.docx') // Tải mẫu DOCX
-        .then(res => res.arrayBuffer());
+    // URL API GitHub để lấy tệp DOCX từ kho lưu trữ
+    const githubApiUrl = 'https://api.github.com/repos/ginznz/gender/contents/Template.docx';
 
-    doc.load(docxTemplate);
+    // Gửi yêu cầu tới GitHub API để lấy tệp
+    const response = await fetch(githubApiUrl);
+    const data = await response.json();
+
+    // Dữ liệu trả về từ GitHub API chứa nội dung tệp được mã hóa base64
+    const docxTemplate = atob(data.content);  // Giải mã base64
+
+    const doc = new PizZip();
+    const uint8Array = new Uint8Array(docxTemplate.length);
+
+    // Chuyển chuỗi base64 thành mảng Uint8Array
+    for (let i = 0; i < docxTemplate.length; i++) {
+        uint8Array[i] = docxTemplate.charCodeAt(i);
+    }
+
+    doc.load(uint8Array);
 
     // Lặp qua từng file ảnh và chèn vào DOCX
     for (let i = 0; i < files.length; i++) {
@@ -17,9 +30,8 @@ async function convertToDocx() {
         const img = await fetch(imgUrl).then(res => res.blob());
         const imgBytes = await img.arrayBuffer();
 
-        // Lưu ảnh vào DOCX (chỉ đơn giản là thêm ảnh vào tệp docx)
-        // Bạn có thể thay đổi cách ảnh được thêm vào tùy theo yêu cầu
-        const base64Image = await imageToBase64(imgBytes); // Chuyển đổi ảnh thành base64 để chèn vào DOCX
+        // Chuyển đổi ảnh thành base64
+        const base64Image = await imageToBase64(imgBytes); // Chuyển ảnh thành base64
         doc.file('word/media/image' + i + '.jpg', base64Image);
     }
 
@@ -42,6 +54,7 @@ function imageToBase64(imgBytes) {
         reader.readAsDataURL(new Blob([imgBytes]));
     });
 }
+
 async function convertToPDF() {
     const { PDFDocument } = PDFLib;
     const pdfDoc = await PDFDocument.create();
