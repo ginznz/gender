@@ -6,10 +6,23 @@ async function convertToPDF() {
     
     // Lặp qua từng file ảnh và thêm vào PDF
     for (let i = 0; i < files.length; i++) {
-        const img = await fetch(URL.createObjectURL(files[i])).then(res => res.blob());
+        const imgFile = files[i];
+        const imgUrl = URL.createObjectURL(imgFile);
+        const img = await fetch(imgUrl).then(res => res.blob());
         const imgBytes = await img.arrayBuffer();
-        const imgEmbed = await pdfDoc.embedJpg(imgBytes);
-        
+
+        // Kiểm tra loại ảnh và sử dụng hàm phù hợp
+        let imgEmbed;
+        if (imgFile.type === "image/jpeg" || imgFile.type === "image/jpg") {
+            imgEmbed = await pdfDoc.embedJpg(imgBytes);
+        } else if (imgFile.type === "image/png") {
+            imgEmbed = await pdfDoc.embedPng(imgBytes);
+        } else {
+            alert("Unsupported file format: " + imgFile.type);
+            continue;
+        }
+
+        // Tạo một trang mới cho mỗi ảnh và thêm ảnh vào PDF
         const page = pdfDoc.addPage([imgEmbed.width, imgEmbed.height]);
         page.drawImage(imgEmbed, { x: 0, y: 0 });
     }
