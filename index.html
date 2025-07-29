@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to PDF Converter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Convert Images to PDF</h1>
+        <input type="file" id="fileInput" multiple accept="image/*">
+        <button onclick="convertToPDF()">Convert to PDF</button>
+        <a id="downloadLink" style="display:none;" download="converted.pdf">
+            <button>Download PDF</button>
+        </a>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
