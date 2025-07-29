@@ -1,5 +1,5 @@
+// Convert images to DOCX
 async function convertToDocx() {
-    const { PDFDocument } = PDFLib;
     const fileInput = document.getElementById('fileInput');
     const files = fileInput.files;
 
@@ -32,7 +32,9 @@ async function convertToDocx() {
 
         // Chuyển đổi ảnh thành base64
         const base64Image = await imageToBase64(imgBytes); // Chuyển ảnh thành base64
-        doc.file('word/media/image' + i + '.jpg', base64Image);
+
+        // Lưu ảnh vào thư mục 'word/media/'
+        doc.file('word/media/image' + i + '.jpg', base64Image); // Lưu ảnh vào thư mục đúng trong DOCX
     }
 
     // Tạo tệp DOCX từ PizZip
